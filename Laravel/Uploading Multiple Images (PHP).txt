@@ -1,0 +1,25 @@
+$coverImages = array();		//array to hold image paths
+$imageFiles = Input::file('covers');	//image files
+            
+            foreach($imageFiles as $file)
+            {
+                
+                //dd($file->getClientOriginalName());
+                $input = array('cover'=>$file);
+                $rules = array(
+                    'cover'=> 'image|mimes:jpeg,png,jpg,gif|max:10240'
+                    );
+
+                $validator = Validator::make($input,$rules);
+                if($validator->fails())
+                {
+                    return redirect()->back()->with('imageError','Invalid Image');
+                }
+                else
+                {
+                    $destinationPath = 'images/';
+                    $fileName = $file->getClientOriginalName();
+                    $file->move($destinationPath,$fileName);
+                    array_push($coverImage,$fileName);
+                }
+            }
